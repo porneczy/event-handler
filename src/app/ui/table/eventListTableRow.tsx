@@ -1,31 +1,76 @@
+"use client";
+
 import * as React from "react";
-import { Event } from "../../lib/types";
-import { formatDate } from "../../lib/utils";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Button from "@mui/material/Button";
+import EventDetailsDialog from "../eventDetailsDialog";
+import DeleteEventConfirmDialog from "../deleteEventConfirmDialog";
+import { Event } from "../../lib/types";
+import { formatDate } from "../../lib/utils";
 
 interface EventRowProps {
   event: Event;
 }
 
 const EventRow: React.FC<EventRowProps> = ({ event }) => {
+  const [openDetailsDialog, setOpenDetailsDialog] = React.useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+
+  const handleOpenDetailsDialog = () => {
+    setOpenDetailsDialog(true);
+  };
+
+  const handleCloseDetailsDialog = () => {
+    setOpenDetailsDialog(false);
+  };
+
+  const handleOpenDeleteDialog = () => {
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
+
   return (
-    <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-      <TableCell component="th" scope="row">
-        {event.title}
-      </TableCell>
-      <TableCell align="center">{formatDate(event.start)}</TableCell>
-      <TableCell align="center">{formatDate(event.finish)}</TableCell>
-      <TableCell align="center">
-        <Button variant="contained" size="small" className="p-2">
-          Részletek
-        </Button>
-        <Button variant="outlined" color="error" size="small">
-          Törlés
-        </Button>
-      </TableCell>
-    </TableRow>
+    <React.Fragment>
+      <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+        <TableCell component="th" scope="row">
+          {event.title}
+        </TableCell>
+        <TableCell align="center">{formatDate(event.start)}</TableCell>
+        <TableCell align="center">{formatDate(event.finish)}</TableCell>
+        <TableCell align="center">
+          <Button
+            onClick={handleOpenDetailsDialog}
+            variant="contained"
+            size="small"
+            className="p-2"
+          >
+            Részletek
+          </Button>
+          <Button
+            onClick={handleOpenDeleteDialog}
+            variant="outlined"
+            color="error"
+            size="small"
+          >
+            Törlés
+          </Button>
+        </TableCell>
+      </TableRow>
+      <EventDetailsDialog
+        open={openDetailsDialog}
+        handleClose={handleCloseDetailsDialog}
+        event={event}
+      />
+      <DeleteEventConfirmDialog
+        open={openDeleteDialog}
+        handleClose={handleCloseDeleteDialog}
+        event={event}
+      />
+    </React.Fragment>
   );
 };
 
