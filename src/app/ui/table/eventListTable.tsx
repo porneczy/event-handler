@@ -15,7 +15,7 @@ interface EventListTableProps {
 
 const EventListTable: React.FC<EventListTableProps> = ({ events }) => {
   return (
-    <TableContainer sx={{ maxWidth: 1000 }} component={Paper}>
+    <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="event list table">
         <TableHead>
           <TableRow>

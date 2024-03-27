@@ -4,6 +4,8 @@ import * as React from "react";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import EventDetailsDialog from "../eventDetailsDialog";
 import DeleteEventConfirmDialog from "../deleteEventConfirmDialog";
 import { Event } from "../../lib/types";
@@ -42,22 +44,25 @@ const EventRow: React.FC<EventRowProps> = ({ event }) => {
         <TableCell align="center">{formatDate(event.start)}</TableCell>
         <TableCell align="center">{formatDate(event.finish)}</TableCell>
         <TableCell align="center">
-          <Button
-            onClick={handleOpenDetailsDialog}
-            variant="contained"
-            size="small"
-            className="p-2"
-          >
-            Részletek
-          </Button>
-          <Button
-            onClick={handleOpenDeleteDialog}
-            variant="outlined"
-            color="error"
-            size="small"
-          >
-            Törlés
-          </Button>
+          <div className="flex justify-center justify-around w-full">
+            <Button
+              onClick={handleOpenDetailsDialog}
+              startIcon={<EditIcon />}
+              variant="contained"
+              size="small"
+            >
+              Részletek
+            </Button>
+            <Button
+              onClick={handleOpenDeleteDialog}
+              startIcon={<DeleteIcon />}
+              variant="outlined"
+              color="error"
+              size="small"
+            >
+              Törlés
+            </Button>
+          </div>
         </TableCell>
       </TableRow>
       <EventDetailsDialog
