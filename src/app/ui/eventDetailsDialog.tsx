@@ -6,6 +6,8 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { formatDate } from "../lib/utils";
+import { useQuery } from "@apollo/client";
+import { GET_EVENT } from "../lib/queries";
 
 interface EventDetailsDialogProps {
   open: boolean;
@@ -18,25 +20,31 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
   handleClose,
   eventId,
 }) => {
+  const { data } = useQuery(GET_EVENT, {
+    variables: { eventId },
+    skip: !eventId,
+  });
+
   const [formData, setFormData] = useState({
     title: "",
-    details: "",
+    description: "",
     location: "",
     start: "",
     finish: "",
   });
 
   useEffect(() => {
-    if (eventId) {
+    if (data && data.event) {
+      const { event } = data;
       setFormData({
-        title: eventId || "",
-        details: eventId || "",
-        location: eventId || "",
-        start: eventId || "",
-        finish: eventId || "",
+        title: event.title || "",
+        description: event.description || "",
+        location: event.location?.name || "",
+        start: formatDate(event.start) || "",
+        finish: formatDate(event.finish) || "",
       });
     }
-  }, [eventId]);
+  }, [data]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -63,13 +71,13 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
         />
         <TextField
           margin="dense"
-          id="details"
-          name="details"
+          id="description"
+          name="description"
           label="Részletek"
           multiline
           rows={4}
           fullWidth
-          value={formData.details}
+          value={formData.description}
           onChange={handleChange}
         />
         <TextField
@@ -79,7 +87,7 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
           label="Kezdete"
           type="text"
           fullWidth
-          value={eventId}
+          value={formatDate(formData.start)}
           InputProps={{
             readOnly: true,
           }}
@@ -91,7 +99,7 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
           label="Vége"
           type="text"
           fullWidth
-          value={eventId}
+          value={formatDate(formData.start)}
           InputProps={{
             readOnly: true,
           }}

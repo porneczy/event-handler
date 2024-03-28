@@ -23,9 +23,9 @@ const DeleteEventConfirmDialog: React.FC<DeleteEventConfirmDialogProps> = ({
       <DialogTitle>Biztosan törli a következő eseményt?</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          esemény cím: {event.title}
+          {event.title}
           <br />
-          esemény azonosító: {event.id}
+          <span className="text-xs text-slate-500">ID: {event.id}</span>
         </DialogContentText>
       </DialogContent>
       <DialogActions>

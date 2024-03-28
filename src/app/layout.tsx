@@ -4,6 +4,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../theme";
 import "./globals.css";
+import { ApolloWrapper } from "./lib/ApolloWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>{children} </ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <ApolloWrapper>{children}</ApolloWrapper>
+          </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
