@@ -19,22 +19,6 @@ const EventRow: React.FC<EventRowProps> = ({ event }) => {
   const [openDetailsDialog, setOpenDetailsDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
-  const handleOpenDetailsDialog = () => {
-    setOpenDetailsDialog(true);
-  };
-
-  const handleCloseDetailsDialog = () => {
-    setOpenDetailsDialog(false);
-  };
-
-  const handleOpenDeleteDialog = () => {
-    setOpenDeleteDialog(true);
-  };
-
-  const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-  };
-
   return (
     <React.Fragment>
       <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
@@ -46,7 +30,7 @@ const EventRow: React.FC<EventRowProps> = ({ event }) => {
         <TableCell align="center">
           <div className="flex justify-center justify-around w-full">
             <Button
-              onClick={handleOpenDetailsDialog}
+              onClick={() => setOpenDetailsDialog(true)}
               startIcon={<EditIcon />}
               variant="contained"
               size="small"
@@ -54,7 +38,7 @@ const EventRow: React.FC<EventRowProps> = ({ event }) => {
               Részletek
             </Button>
             <Button
-              onClick={handleOpenDeleteDialog}
+              onClick={() => setOpenDeleteDialog(true)}
               startIcon={<DeleteIcon />}
               variant="outlined"
               color="error"
@@ -67,12 +51,12 @@ const EventRow: React.FC<EventRowProps> = ({ event }) => {
       </TableRow>
       <EventDetailsDialog
         open={openDetailsDialog}
-        handleClose={handleCloseDetailsDialog}
-        event={event}
+        handleClose={() => setOpenDetailsDialog(false)}
+        eventId={event.id}
       />
       <DeleteEventConfirmDialog
         open={openDeleteDialog}
-        handleClose={handleCloseDeleteDialog}
+        handleClose={() => setOpenDeleteDialog(false)}
         event={event}
       />
     </React.Fragment>

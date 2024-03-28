@@ -1,29 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { Event } from "../lib/types";
 import { formatDate } from "../lib/utils";
 
 interface EventDetailsDialogProps {
   open: boolean;
   handleClose: () => void;
-  event: Event;
+  eventId?: string;
 }
 
 const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
   open,
   handleClose,
-  event,
+  eventId,
 }) => {
   const [formData, setFormData] = useState({
-    title: event.title,
+    title: "",
     details: "",
-    location: event.title,
+    location: "",
+    start: "",
+    finish: "",
   });
+
+  useEffect(() => {
+    if (eventId) {
+      setFormData({
+        title: eventId || "",
+        details: eventId || "",
+        location: eventId || "",
+        start: eventId || "",
+        finish: eventId || "",
+      });
+    }
+  }, [eventId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,7 +48,7 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Esemény részletei</DialogTitle>
+      <DialogTitle>{eventId ? "Esemény részletei" : "Új esemény"} </DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
@@ -66,7 +79,7 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
           label="Kezdete"
           type="text"
           fullWidth
-          value={formatDate(event.start)}
+          value={eventId}
           InputProps={{
             readOnly: true,
           }}
@@ -78,7 +91,7 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
           label="Vége"
           type="text"
           fullWidth
-          value={formatDate(event.finish)}
+          value={eventId}
           InputProps={{
             readOnly: true,
           }}
