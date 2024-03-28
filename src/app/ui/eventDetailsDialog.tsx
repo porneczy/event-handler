@@ -5,9 +5,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { formatDate } from "../lib/utils";
 import { useQuery } from "@apollo/client";
 import { GET_EVENT } from "../lib/queries";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import dayjs from "dayjs";
+import Image from "next/image";
+import { fetchImage } from "../lib/data";
 
 interface EventDetailsDialogProps {
   open: boolean;
@@ -28,21 +33,39 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    location: "",
+    location: {
+      name: "",
+    },
     start: "",
     finish: "",
+    photo: {
+      id: "",
+      url: "",
+    },
   });
 
   useEffect(() => {
     if (data && data.event) {
       const { event } = data;
-      setFormData({
-        title: event.title || "",
-        description: event.description || "",
-        location: event.location?.name || "",
-        start: formatDate(event.start) || "",
-        finish: formatDate(event.finish) || "",
-      });
+      fetchImage(event.photo?.id)
+        .then((photoUrl) => {
+          setFormData({
+            title: event.title || "",
+            description: event.description || "",
+            location: {
+              name: event.location?.name || "",
+            },
+            start: event.start || "",
+            finish: event.finish || "",
+            photo: {
+              id: event.photo?.id || "",
+              url: photoUrl || "",
+            },
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching image:", error);
+        });
     }
   }, [data]);
 
@@ -80,30 +103,23 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
           value={formData.description}
           onChange={handleChange}
         />
-        <TextField
-          margin="dense"
-          id="start"
-          name="start"
-          label="Kezdete"
-          type="text"
-          fullWidth
-          value={formatDate(formData.start)}
-          InputProps={{
-            readOnly: true,
-          }}
-        />
-        <TextField
-          margin="dense"
-          id="finish"
-          name="finish"
-          label="Vége"
-          type="text"
-          fullWidth
-          value={formatDate(formData.start)}
-          InputProps={{
-            readOnly: true,
-          }}
-        />
+        {(formData.start || formData.finish || !eventId) && (
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <div className="flex flex-col mt-2 mb-1">
+              <DateTimePicker
+                name="start"
+                label="Kezdete"
+                defaultValue={dayjs(formData.start)}
+              />
+              <div className="m-1" />
+              <DateTimePicker
+                name="finish"
+                label="Vége"
+                defaultValue={dayjs(formData.finish)}
+              />
+            </div>
+          </LocalizationProvider>
+        )}
         <TextField
           margin="dense"
           id="location"
@@ -111,9 +127,17 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
           label="Helyszín"
           type="text"
           fullWidth
-          value={formData.location}
+          value={formData.location.name}
           onChange={handleChange}
         />
+        {(formData.photo.url || !eventId) && (
+          <Image
+            src={formData.photo.url}
+            width={70}
+            height={70}
+            alt="Picture of the author"
+          />
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Mégse</Button>

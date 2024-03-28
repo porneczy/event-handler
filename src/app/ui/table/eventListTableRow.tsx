@@ -49,16 +49,20 @@ const EventRow: React.FC<EventRowProps> = ({ event }) => {
           </div>
         </TableCell>
       </TableRow>
-      <EventDetailsDialog
-        open={openDetailsDialog}
-        handleClose={() => setOpenDetailsDialog(false)}
-        eventId={event.id}
-      />
-      <DeleteEventConfirmDialog
-        open={openDeleteDialog}
-        handleClose={() => setOpenDeleteDialog(false)}
-        event={event}
-      />
+      {openDetailsDialog && (
+        <EventDetailsDialog
+          open={openDetailsDialog}
+          handleClose={() => setOpenDetailsDialog(false)}
+          eventId={event.id}
+        />
+      )}
+      {openDeleteDialog && (
+        <DeleteEventConfirmDialog
+          open={openDeleteDialog}
+          handleClose={() => setOpenDeleteDialog(false)}
+          event={event}
+        />
+      )}
     </React.Fragment>
   );
 };
