@@ -1,8 +1,9 @@
 export async function fetchImage(id: string | undefined) {
   try {
-    const response = await fetch(`https://backend.bixindex.hu/public/event/photo/${id}`);
-    // ???
-    return response.url;
+    if (id){
+      const response = await fetch(`https://backend.bixindex.hu/public/event/photo/${id}?getAs=CONTENT&format=jpg&maxWidth=150&maxHeight=150`);
+      return response.url;
+    } else return
   } catch (error) {
     console.error('Error fetching image:', error);
     throw error;

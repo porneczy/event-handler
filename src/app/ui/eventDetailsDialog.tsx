@@ -3,8 +3,10 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import { styled } from "@mui/material/styles";
 import { useQuery } from "@apollo/client";
 import { GET_EVENT } from "../lib/queries";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -84,6 +86,32 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
     handleClose();
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      const newPhotoUrl = URL.createObjectURL(file);
+      setFormData((prevData) => ({
+        ...prevData,
+        photo: { id: "", url: newPhotoUrl },
+      }));
+      // ???
+      console.log(formData);
+    }
+  };
+
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{eventId ? "Esemény részletei" : "Új esemény"}</DialogTitle>
@@ -141,14 +169,29 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
           value={formData.location.name}
           onChange={handleChange}
         />
-        {(formData.photo.url || !eventId) && (
-          <Image
-            src={formData.photo.url}
-            width={70}
-            height={70}
-            alt="Picture of the author"
-          />
-        )}
+        <div className="flex items-center justify-center justify-around mt-2">
+          {formData.photo.id && (
+            <Image
+              src={formData.photo.url}
+              width={150}
+              height={150}
+              alt="Picture of the author"
+            />
+          )}
+          <Button
+            component="label"
+            role={undefined}
+            variant="contained"
+            startIcon={<CloudUploadIcon />}
+          >
+            {formData.photo.id ? "kép csere" : "kép feltöltés"}
+            <VisuallyHiddenInput
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </Button>
+        </div>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Mégse</Button>
