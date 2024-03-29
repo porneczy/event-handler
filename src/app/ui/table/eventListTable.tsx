@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Event } from "../../lib/types";
+import { EventListTableProps } from "../../lib/types";
 import EventListTableRow from "./eventListTableRow";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
@@ -13,10 +13,6 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import EventDetailsDialog from "../eventDetailsDialog";
-
-interface EventListTableProps {
-  events: Event[];
-}
 
 const EventListTable: React.FC<EventListTableProps> = ({ events }) => {
   const [openDetailsDialog, setOpenDetailsDialog] = React.useState(false);

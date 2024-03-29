@@ -12,13 +12,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
 import Image from "next/image";
-import { fetchImage } from "../lib/data";
-
-interface EventDetailsDialogProps {
-  open: boolean;
-  handleClose: () => void;
-  eventId?: string;
-}
+import { fetchImage, postEvent, putEvent } from "../lib/data";
+import { EventDetailsDialogProps } from "../lib/types";
 
 const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
   open,
@@ -77,6 +72,38 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
     }));
   };
 
+  const handleDateTimeChange = (
+    fieldName: string,
+    newValue: dayjs.Dayjs | null
+  ) => {
+    if (newValue) {
+      setFormData((prevData) => ({
+        ...prevData,
+        [fieldName]: newValue.toISOString(),
+      }));
+    }
+  };
+
+  const handlePostEvent = () => {
+    const { photo, ...postData } = formData;
+    const postDataWithoutPhotoUrl = {
+      ...postData,
+      photo: { id: photo.id },
+    };
+    postEvent(postDataWithoutPhotoUrl);
+    handleClose();
+  };
+
+  const handlePutEvent = () => {
+    const { photo, ...putData } = formData;
+    const putDataWithoutPhotoUrl = {
+      ...putData,
+      photo: { id: photo.id },
+    };
+    putEvent(putDataWithoutPhotoUrl, eventId);
+    handleClose();
+  };
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{eventId ? "Esemény részletei" : "Új esemény"} </DialogTitle>
@@ -109,13 +136,17 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
               <DateTimePicker
                 name="start"
                 label="Kezdete"
-                defaultValue={dayjs(formData.start)}
+                defaultValue={formData.start ? dayjs(formData.start) : null}
+                onChange={(newValue) => handleDateTimeChange("start", newValue)}
               />
               <div className="m-1" />
               <DateTimePicker
                 name="finish"
                 label="Vége"
-                defaultValue={dayjs(formData.finish)}
+                defaultValue={formData.finish ? dayjs(formData.finish) : null}
+                onChange={(newValue) =>
+                  handleDateTimeChange("finish", newValue)
+                }
               />
             </div>
           </LocalizationProvider>
@@ -141,7 +172,10 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Mégse</Button>
-        <Button onClick={handleClose} color="primary">
+        <Button
+          onClick={eventId ? handlePutEvent : handlePostEvent}
+          color="primary"
+        >
           Mentés
         </Button>
       </DialogActions>

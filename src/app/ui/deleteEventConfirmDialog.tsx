@@ -5,19 +5,19 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import { Event } from "../lib/types";
-
-interface DeleteEventConfirmDialogProps {
-  open: boolean;
-  handleClose: () => void;
-  event: Event;
-}
+import { DeleteEventConfirmDialogProps } from "../lib/types";
+import { deleteEvent } from "../lib/data";
 
 const DeleteEventConfirmDialog: React.FC<DeleteEventConfirmDialogProps> = ({
   open,
   handleClose,
   event,
 }) => {
+  const handleDeleteEvent = () => {
+    deleteEvent(event.id);
+    handleClose();
+  };
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Biztosan törli a következő eseményt?</DialogTitle>
@@ -29,10 +29,10 @@ const DeleteEventConfirmDialog: React.FC<DeleteEventConfirmDialogProps> = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="error">
+        <Button onClick={handleClose}>Mégse</Button>
+        <Button onClick={handleDeleteEvent} color="error">
           Törlés
         </Button>
-        <Button onClick={handleClose}>Mégse</Button>
       </DialogActions>
     </Dialog>
   );

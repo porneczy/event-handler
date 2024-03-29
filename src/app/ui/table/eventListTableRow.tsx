@@ -8,12 +8,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import EventDetailsDialog from "../eventDetailsDialog";
 import DeleteEventConfirmDialog from "../deleteEventConfirmDialog";
-import { Event } from "../../lib/types";
+import { EventRowProps } from "../../lib/types";
 import { formatDate } from "../../lib/utils";
-
-interface EventRowProps {
-  event: Event;
-}
 
 const EventRow: React.FC<EventRowProps> = ({ event }) => {
   const [openDetailsDialog, setOpenDetailsDialog] = React.useState(false);
