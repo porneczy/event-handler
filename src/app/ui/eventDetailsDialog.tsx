@@ -28,34 +28,25 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    location: {
-      name: "",
-    },
+    location: { name: "" },
     start: "",
     finish: "",
-    photo: {
-      id: "",
-      url: "",
-    },
+    photo: { id: "", url: "" },
   });
 
   useEffect(() => {
     if (data && data.event) {
       const { event } = data;
-      fetchImage(event.photo?.id)
+      const { title, description, location, start, finish, photo } = event;
+      fetchImage(photo?.id)
         .then((photoUrl) => {
           setFormData({
-            title: event.title || "",
-            description: event.description || "",
-            location: {
-              name: event.location?.name || "",
-            },
-            start: event.start || "",
-            finish: event.finish || "",
-            photo: {
-              id: event.photo?.id || "",
-              url: photoUrl || "",
-            },
+            title: title || "",
+            description: description || "",
+            location: { name: location?.name || "" },
+            start: start || "",
+            finish: finish || "",
+            photo: { id: photo?.id || "", url: photoUrl || "" },
           });
         })
         .catch((error) => {
@@ -66,10 +57,7 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleDateTimeChange = (
@@ -86,27 +74,19 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
 
   const handlePostEvent = () => {
     const { photo, ...postData } = formData;
-    const postDataWithoutPhotoUrl = {
-      ...postData,
-      photo: { id: photo.id },
-    };
-    postEvent(postDataWithoutPhotoUrl);
+    postEvent({ ...postData, photo: { id: photo.id } });
     handleClose();
   };
 
   const handlePutEvent = () => {
     const { photo, ...putData } = formData;
-    const putDataWithoutPhotoUrl = {
-      ...putData,
-      photo: { id: photo.id },
-    };
-    putEvent(putDataWithoutPhotoUrl, eventId);
+    putEvent({ ...putData, photo: { id: photo.id } }, eventId);
     handleClose();
   };
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{eventId ? "Esemény részletei" : "Új esemény"} </DialogTitle>
+      <DialogTitle>{eventId ? "Esemény részletei" : "Új esemény"}</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
