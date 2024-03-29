@@ -27,6 +27,7 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
     skip: !eventId,
   });
 
+  const [previewImageURL, setPreviewImageURL] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -91,12 +92,11 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
     if (files && files.length > 0) {
       const file = files[0];
       const newPhotoUrl = URL.createObjectURL(file);
+      setPreviewImageURL(newPhotoUrl);
       setFormData((prevData) => ({
         ...prevData,
         photo: { id: "", url: newPhotoUrl },
       }));
-      // ???
-      console.log(formData);
     }
   };
 
@@ -170,12 +170,12 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
           onChange={handleChange}
         />
         <div className="flex items-center justify-center justify-around mt-2">
-          {formData.photo.id && (
+          {(formData.photo.id || previewImageURL) && (
             <Image
-              src={formData.photo.url}
+              src={formData.photo.url ? formData.photo.url : previewImageURL}
               width={150}
               height={150}
-              alt="Picture of the author"
+              alt="Picture of the event"
             />
           )}
           <Button
@@ -184,7 +184,9 @@ const EventDetailsDialog: React.FC<EventDetailsDialogProps> = ({
             variant="contained"
             startIcon={<CloudUploadIcon />}
           >
-            {formData.photo.id ? "kép csere" : "kép feltöltés"}
+            {formData.photo.id || previewImageURL
+              ? "kép csere"
+              : "kép feltöltés"}
             <VisuallyHiddenInput
               type="file"
               accept="image/*"
